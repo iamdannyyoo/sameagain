@@ -6,7 +6,7 @@ import { join } from "node:path";
 const command = process.argv[2];
 
 if (!command || command === "--help" || command === "-h") {
-  console.log("Usage: repokit biome");
+  console.log("Usage: sameagain biome");
 } else if (command !== "biome") {
   console.error(`Unknown command: ${command}`);
   process.exitCode = 1;
