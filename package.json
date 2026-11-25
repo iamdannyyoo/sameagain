@@ -1,0 +1,19 @@
+{
+  "name": "repokit",
+  "version": "0.0.1",
+  "description": "Set up repositories with my preferred configuration",
+  "type": "module",
+  "bin": {
+    "repokit": "./bin/cli.js"
+  },
+  "files": [
+    "bin",
+    "templates"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iamdannyyoo/repokit.git"
+  },
+  "license": "ISC",
+  "packageManager": "pnpm@10.30.1"
+}
