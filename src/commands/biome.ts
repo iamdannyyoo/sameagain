@@ -13,28 +13,32 @@ interface ProjectPackage {
 
 export function setupBiome(): void {
   try {
-    const projectDirectory = process.cwd();
-    const project = readPackageJson(projectDirectory);
-
-    if (hasBiomeDependency(project)) {
-      copyBiomeConfig(projectDirectory);
-      console.log("@biomejs/biome is already declared. Keeping its version.");
-      return;
-    }
-
-    // Choose the installer before making changes to the project.
-    const packageManager = detectPackageManager(
-      projectDirectory,
-      project.packageManager,
-    );
-
-    copyBiomeConfig(projectDirectory);
-    installBiome(projectDirectory, packageManager);
+    ensureBiome();
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     console.error(`Could not set up Biome: ${message}`);
     process.exitCode = 1;
   }
+}
+
+export function ensureBiome(): void {
+  const projectDirectory = process.cwd();
+  const project = readPackageJson(projectDirectory);
+
+  if (hasBiomeDependency(project)) {
+    copyBiomeConfig(projectDirectory);
+    console.log("@biomejs/biome is already declared. Keeping its version.");
+    return;
+  }
+
+  // Choose the installer before making changes to the project.
+  const packageManager = detectPackageManager(
+    projectDirectory,
+    project.packageManager,
+  );
+
+  copyBiomeConfig(projectDirectory);
+  installBiome(projectDirectory, packageManager);
 }
 
 function readPackageJson(projectDirectory: string): ProjectPackage {
@@ -79,7 +83,7 @@ function installBiome(
   const installCommand = packageManager === "npm" ? "install" : "add";
 
   // Save Biome as a development dependency and pin its exact version.
-  const args = [installCommand, "-D", "-E", biomePackage];
+  const args = [installCommand, "-D", "-E", ...(packageManager === "pnpm" && existsSync(join(projectDirectory, "pnpm-workspace.yaml")) ? ["-w"] : []), biomePackage];
   const command = `${packageManager} ${args.join(" ")}`;
 
   console.log(`Installing Biome: ${command}`);
