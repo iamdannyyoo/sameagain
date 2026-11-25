@@ -4,14 +4,24 @@ Set up repositories with my preferred configuration.
 
 ## Usage
 
-From the root of the repository you want to configure:
+From the root of a project with a `package.json`:
 
 ```sh
 npx sameagain biome
 ```
 
-Copies the bundled Biome configuration into the current directory. Skips copying
-if `biome.json` or `biome.jsonc` already exists. Install Biome separately.
+Copies the bundled Biome configuration into the current directory and installs
+`@biomejs/biome` as an exact-version development dependency (`-D -E`).
+
+Uses the project's `packageManager` field, then its lockfile, falling back to npm.
+Supports npm, pnpm, Yarn, and Bun; the selected manager must be installed.
+Run from the workspace root for a monorepo.
+
+Existing `biome.json` or `biome.jsonc` files are preserved. If Biome is already
+declared in dependencies or devDependencies, its version is preserved and
+installation is skipped. Run your package manager's install command if those
+dependencies have not been downloaded yet. If installation fails, the config is
+kept and a retry command is printed.
 
 ## Development
 
